@@ -94,6 +94,10 @@ class BusForm(forms.ModelForm):
         if num_unidad <= 0:
             raise forms.ValidationError("El número de unidad debe ser positivo.")
         return num_unidad
+    
+    def clean_patente(self):
+        if Bus.objects.filter(patente=self.patente).exclude(id=self.id).exists():
+            raise ValidationError('La patente ya existe.')
 
     def clean_fecha_compra(self):
         fecha_compra = self.cleaned_data.get('fecha_compra')

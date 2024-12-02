@@ -95,12 +95,19 @@ class ControladorParada:
     def listar_paradas():
         """Obtiene todas las paradas ordenadas por nombre"""
         return Parada.objects.all().order_by('nombre')
-        
-
+    
     @staticmethod
     def eliminar_parada(parada_id):
-        parada=Parada.objects.filter(id=parada_id).first()
-        parada.eliminar_parada(parada_id)
+        """Elimina una parada específica"""
+        try:
+            parada = Parada.objects.get(id=parada_id)
+            nombre_parada = parada.nombre
+            parada.delete()
+            return True, f'La parada "{nombre_parada}" ha sido eliminada.'
+        except Parada.DoesNotExist:
+            return False, 'La parada no existe.'
+        except Exception as e:
+            return False, f'Error al eliminar la parada: {str(e)}'
 
 
 class ListaParadasView(LoginRequiredMixin, UserPassesTestMixin, ListView):
