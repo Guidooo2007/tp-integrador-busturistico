@@ -63,7 +63,7 @@ class Atractivo(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     calificacion = models.FloatField()
-
+ 
     def __str__(self):
         return self.nombre
 
