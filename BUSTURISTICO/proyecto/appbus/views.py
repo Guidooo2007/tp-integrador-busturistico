@@ -110,12 +110,23 @@ class ControladorParada:
             return False, f'Error al eliminar la parada: {str(e)}'
 
 
-class ListaParadasView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.urls import reverse_lazy
+
+class ListaParadasView(ListView):
     template_name = 'parada/lista_paradas.html'
     context_object_name = 'paradas'
 
-    def test_func(self):
-        return self.request.user.is_superuser
+    def dispatch(self, request, *args, **kwargs):
+        
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy('base'))  
+        
+       
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return ControladorParada.listar_paradas()
@@ -124,22 +135,31 @@ class ListaParadasView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if 'eliminar' in request.POST:
             parada_id = request.POST.get('parada_id')
             ControladorParada.eliminar_parada(parada_id)
-            
         return HttpResponseRedirect(reverse_lazy('lista_paradas'))
 
-class CrearParadaView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+
+class CrearParadaView(CreateView):
     template_name = 'parada/crear_parada.html'
     form_class = ParadaForm
     success_url = reverse_lazy('lista_paradas')
 
-    def test_func(self):
-        return self.request.user.is_superuser
+    def dispatch(self, request, *args, **kwargs):
+        
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy('base'))  
+        
+       
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        
+        return super().dispatch(request, *args, **kwargs)
+
 
     def form_valid(self, form):
         response = ControladorParada.crear_parada(form.cleaned_data)
         if response.get('success'):
             messages.success(self.request, 'Parada creada exitosamente.')
-            return HttpResponseRedirect(self.success_url)  # Redirigir directamente
+            return HttpResponseRedirect(self.success_url)  
         else:
             messages.error(self.request, response.get('error'))
             return self.form_invalid(form)
