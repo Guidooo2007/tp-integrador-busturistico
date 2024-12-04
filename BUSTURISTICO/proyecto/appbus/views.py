@@ -17,8 +17,10 @@ from django.core.exceptions import ValidationError
 from django.db.models import Avg
 from datetime import datetime
 from django.contrib.auth.models import User
-
-# Create your views here.
+from django.utils.timezone import now
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -26,9 +28,46 @@ class IndexView(TemplateView):
 class BaseView(TemplateView):
     template_name = 'base/base.html'
     
+class RegistroUsuarioView(FormView):
+    template_name = 'user/registro.html' 
+    form_class = UserCreationForm  
+    success_url = reverse_lazy('login')  
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
 
-    
+class ListaAnotadosView(ListView):
+    model = Viaje
+    template_name = 'viaje/lista_anotados.html'
+    context_object_name = 'viajes'
+
+
+from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
+from django.shortcuts import redirect
+
+class LoginUsuarioView(FormView):
+    template_name = 'user/login.html' 
+    form_class = AuthenticationForm  
+    success_url = reverse_lazy('iindex')  
+
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+
+
 class ParadaDetailView(DetailView):
     model = Parada
     template_name = 'parada/parada.html'
@@ -479,6 +518,30 @@ class EditarViajeView(UpdateView):
         viaje.save()  # Ahora guardamos el viaje
         return super().form_valid(form)
 
+
+
+
+
+
+class AnotarEnViajeView(DetailView):
+    model = Viaje
+    template_name = 'viaje/viajes_disponibles.html'
+
+    def post(self, request, *args, **kwargs):
+        viaje = self.get_object()
+
+        if viaje.usuarios_anotados.count() >= viaje.bus.capacidad_maxima:
+            messages.error(request, "El viaje ya alcanzó su capacidad máxima")
+            return redirect('lista_viajes_disponibles')
+
+        fecha_hora_inicio = datetime.combine(viaje.fecha_viaje, viaje.horario_inicio_programado)
+        if now() >= fecha_hora_inicio:
+            messages.error(request, "El viaje ya comenzó y no puedes anotarte")
+            return redirect('lista_viajes_disponibles')
+
+        viaje.usuarios_anotados.add(request.user)
+        messages.success(request, "Te has anotado exitosamente en el viaje")
+        return redirect('lista_viajes_disponibles')
 
     
 class BusListView(ListView):

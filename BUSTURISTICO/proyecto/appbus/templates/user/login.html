@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="login-container">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-user-circle fa-3x text-primary"></i>
+                            <h2 class="mt-3 mb-4">Iniciar Sesión</h2>
+                        </div>
+
+                        <form method="post" action="{% url 'login' %}" class="login-form">
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {{ form.non_field_errors }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="text" name="username" value="{{ form.username.value }}" class="form-control" id="username" placeholder="Usuario" required>
+                                    <label for="username">
+                                        <i class="fas fa-user me-2"></i>Usuario
+                                    </label>
+                                </div>
+                            </div>
+
+                            {% if form.username.errors %}
+                            <div class="text-danger">
+                                {% for error in form.username.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="password" name="password" class="form-control" id="password" placeholder="Contraseña" required>
+                                    <label for="password">
+                                        <i class="fas fa-lock me-2"></i>Contraseña
+                                    </label>
+                                </div>
+                            </div>
+
+                            {% if form.password.errors %}
+                            <div class="text-danger">
+                                {% for error in form.password.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <p>Aún no tienes una cuenta? <a href="{% url 'registro' %}" class="btn btn-outline-secondary btn-lg">Crear Cuenta</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="{% static 'css/login/styles.css' %}">
+{% endblock %}

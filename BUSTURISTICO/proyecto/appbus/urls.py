@@ -3,6 +3,7 @@ from .views import *
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import views as auth_views
 from . import views
+from django.contrib.auth.forms import UserCreationForm
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -18,8 +19,8 @@ urlpatterns = [
     path('viaje/<int:pk>/', ViajeDetailView.as_view(), name='viaje_detalle'),
     path('nuevo-bus/', CrearBusView.as_view(), name='crear_bus'),
     path('buses/', BusListView.as_view(), name='buses'),
-    path('nuevo-viaje/', CrearViajeView.as_view(), name='crear_viaje'),  # Ruta para crear un nuevo viaje
-    path('editar-viaje/<int:pk>/', EditarViajeView.as_view(), name='editar_viaje'),  # Ruta para editar un viaje existente
+    path('nuevo-viaje/', CrearViajeView.as_view(), name='crear_viaje'),  
+    path('editar-viaje/<int:pk>/', EditarViajeView.as_view(), name='editar_viaje'),  
     path('reporte-viajes/', ReporteViajesView.as_view(), name='reporte_viajes'),
     path('choferes/', ChoferListView.as_view(), name='choferes'),
     path('recorrido/gestion-paradas/', GestionParadaRecorridoView.as_view(), name='gestion_paradas'),
@@ -29,4 +30,8 @@ urlpatterns = [
     path('atractivo/crear/', CrearAtractivoView.as_view(), name='crear_atractivo'),
     path('atractivo/gestion-paradas/', GestionAtractivosParadaView.as_view(), name='gestion_atractivos_parada'),
     path('recorridos/lista/', ListaRecorridosView.as_view(), name='lista_recorridos'),
+    path('viaje/viajes_disponibles', AnotarEnViajeView.as_view(), name='viajes_disponibles'),
+    path('viaje/lista_anotados', AnotarEnViajeView.as_view(), name='lista_anotados'),
+    path('user/login', LoginUsuarioView.as_view(), name='login_usuario'),
+    path('user/registro', RegistroUsuarioView.as_view(), name='registro'),
 ]

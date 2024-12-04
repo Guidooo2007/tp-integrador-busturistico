@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 class EstadoBus(models.Model):
     nombre = models.CharField(max_length=50)
@@ -99,6 +100,7 @@ class Viaje(models.Model):
     fecha_viaje = models.DateField()
     marca_inicio_viaje_real = models.DateTimeField(null=True, blank=True)
     marca_fin_viaje_real = models.DateTimeField(null=True, blank=True)
+    usuarios_anotados = models.ManyToManyField(User, related_name="viajes_anotados", blank=True)
 
     def __str__(self):
         return f'Viaje {self.id} - {self.recorrido.nombre}'

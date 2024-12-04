@@ -41,7 +41,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'recorridos' %}">Recorridos</a>
                         </li>
-                        
+                        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'viajes_disponibles' %}">Viajes</a>
+                        </li>
+                        {% endif %}
                         {% if user.is_staff and not user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'marcar_viaje' %}">Marcar Viaje</a>
@@ -69,6 +73,7 @@
                                         <li><a class="dropdown-item" href="{% url 'lista_atractivos' %}">Atractivos</a></li>
                                         <li><a class="dropdown-item" href="{% url 'gestion_atractivos_parada' %}">Gestion Atractivos</a></li>
                                         <li><a class="dropdown-item" href="{% url 'lista_recorridos' %}">Administrar Recorridos</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_anotados' %}">Anotados a viajes</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
                                     <li>
@@ -80,7 +85,7 @@
                                 </ul>
                             </div>
                         {% else %}
-                            <a href="{% url 'login' %}" class="nav-link">Iniciar Sesión</a>
+                            <a href="{% url 'login_usuario' %}" class="nav-link">Iniciar Sesión</a>
                         {% endif %}
                     </div>
                 </div>
