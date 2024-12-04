@@ -47,12 +47,6 @@ class ListaAnotadosView(ListView):
     context_object_name = 'viajes'
 
 
-from django.contrib.auth import login
-from django.contrib.auth.forms import AuthenticationForm
-from django.urls import reverse_lazy
-from django.views.generic.edit import FormView
-from django.shortcuts import redirect
-
 class LoginUsuarioView(FormView):
     template_name = 'user/login.html' 
     form_class = AuthenticationForm  
