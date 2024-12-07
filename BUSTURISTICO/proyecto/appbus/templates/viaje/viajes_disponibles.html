@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5"> Viajes Disponibles </h1>
+
+
+    {% if messages %}
+        <div class="container mb-4">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <div class="row">
+        {% for viaje in viajes %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0 text-uppercase">{{ viaje.nombre }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>📅 Fecha:</strong> {{ viaje.fecha_viaje }}</p>
+                        <p><strong>⏰ Hora de inicio:</strong> {{ viaje.horario_inicio_programado }}</p>
+                        <p><strong>📍 Estado:</strong> {{ viaje.estado_viaje.nombre }}</p>
+                        <p><strong>👥 Anotados:</strong> {{ viaje.usuarios_anotados.count }} / {{ viaje.bus.capacidad_maxima }}</p>
+
+                      
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <a href="{% url 'recorrido_detail' viaje.recorrido.id %}" class="btn btn-outline-info">
+                                Ver Recorrido
+                            </a>
+
+                            {% if user in viaje.usuarios_anotados.all %}
+                                <span class="badge bg-success">✅ Ya estás anotado</span>
+                            {% else %}
+                                <form method="POST" action=".">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="viaje_id" value="{{ viaje.id }}">
+                                    <button type="submit" class="btn btn-primary">Anotarme</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if not viajes %}
+        <div class="alert alert-warning text-center">
+            <strong>No hay viajes disponibles en este momento. ¡Vuelve más tarde! 🚀</strong>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

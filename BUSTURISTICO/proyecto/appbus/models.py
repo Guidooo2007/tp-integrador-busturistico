@@ -76,8 +76,7 @@ class Bus(models.Model):
     num_unidad = models.IntegerField(unique=True)
     fecha_compra = models.DateField()
     estado_bus = models.ForeignKey(EstadoBus, on_delete=models.CASCADE,related_name="bus_estadobus") #EstadoBus
-    cant_pasajeros_max = models.IntegerField(default = 35)
-    cant_pasajeros_min = models.IntegerField(default = 10)
+    capacidad_maxima = models.IntegerField(default = 35)
     
     def __str__(self):
         return f'Unidad {self.num_unidad} - {self.patente}'
@@ -91,6 +90,7 @@ class Chofer(models.Model):
         return f'{self.nombre}'  + ' ' + f'{self.apellido}'
 
 class Viaje(models.Model):
+    id = models.AutoField(primary_key=True)
     chofer = models.ForeignKey(Chofer, on_delete=models.CASCADE,related_name="viaje_chofer" ) #Chofer
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name="viaje_bus") #Bus
     recorrido = models.ForeignKey(Recorrido, on_delete=models.CASCADE,related_name="viaje_recorrido") #recorrido
@@ -100,7 +100,7 @@ class Viaje(models.Model):
     fecha_viaje = models.DateField()
     marca_inicio_viaje_real = models.DateTimeField(null=True, blank=True)
     marca_fin_viaje_real = models.DateTimeField(null=True, blank=True)
-    usuarios_anotados = models.ManyToManyField(User, related_name="viajes_anotados", blank=True)
+    usuarios_anotados = models.ManyToManyField(User, related_name="viajes_anotados")
 
     def __str__(self):
         return f'Viaje {self.id} - {self.recorrido.nombre}'

@@ -30,8 +30,9 @@ urlpatterns = [
     path('atractivo/crear/', CrearAtractivoView.as_view(), name='crear_atractivo'),
     path('atractivo/gestion-paradas/', GestionAtractivosParadaView.as_view(), name='gestion_atractivos_parada'),
     path('recorridos/lista/', ListaRecorridosView.as_view(), name='lista_recorridos'),
-    path('viaje/viajes_disponibles', AnotarEnViajeView.as_view(), name='viajes_disponibles'),
-    path('viaje/lista_anotados', AnotarEnViajeView.as_view(), name='lista_anotados'),
-    path('user/login', LoginUsuarioView.as_view(), name='login_usuario'),
     path('user/registro', RegistroUsuarioView.as_view(), name='registro'),
+    path('viajes/viajes_disponibles', Viajedisponibles.as_view(), name='viajes_disponibles'),
+    path('viaje/lista_anotados/', ListaAnotadosView.as_view(), name='lista_anotados'),
+    
+
 ]
