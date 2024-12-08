@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 from .forms import *
 from .models import *
+from django.http import HttpResponse
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -36,14 +37,16 @@ class ListaAnotadosView(ListView):
     context_object_name = 'viajes'
 
     def get_queryset(self):
-        return Viaje.objects.all()  
+        # Usamos prefetch_related para evitar múltiples consultas
+        return Viaje.objects.prefetch_related('usuarios_anotados', 'bus', 'chofer').all() 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        usuarios = []
-        for viaje in Viaje.objects.all():
-            usuarios.extend(viaje.usuarios_anotados.all()) 
-        context['anotados'] = usuarios
+        context['anotados'] = [
+            (usuario, viaje) 
+            for viaje in context['viajes'] 
+            for usuario in viaje.usuarios_anotados.all()
+        ]
         return context
 
 class ParadaDetailView(DetailView):
@@ -375,30 +378,32 @@ class Viajedisponibles(View):
         return render(request, 'viaje/viajes_disponibles.html', {'viajes': viajes})
 
     def post(self, request, *args, **kwargs):
-        viaje_id = request.POST.get('viaje_id')
+        viaje_id = kwargs.get('viaje_id')  # Obtener el ID desde los parámetros de la URL
+        print(f"POST recibido con viaje_id: {viaje_id}")  # Verifica el ID en los logs
 
         if not viaje_id:
             messages.error(request, "No se especificó el ID del viaje.")
             return redirect('viajes_disponibles')
 
         viaje = get_object_or_404(Viaje, id=viaje_id)
+        print(f"Detalles del viaje: {viaje.recorrido}, {viaje.fecha_viaje}, {viaje.estado_viaje}")
 
         if viaje.usuarios_anotados.count() >= viaje.bus.capacidad_maxima:
-            messages.error(request, f"El viaje '{viaje.nombre}' ya alcanzó su capacidad máxima.")
+            messages.error(request, f"El viaje '{viaje.recorrido}' ya alcanzó su capacidad máxima.")
             return redirect('viajes_disponibles')
 
         if now().date() > viaje.fecha_viaje:
-            messages.error(request, f"El viaje '{viaje.nombre}' ya comenzó. No puedes anotarte.")
+            messages.error(request, f"El viaje '{viaje.recorrido}' ya comenzó. No puedes anotarte.")
             return redirect('viajes_disponibles')
 
         if request.user in viaje.usuarios_anotados.all():
-            messages.info(request, f"Ya estás anotado en el viaje '{viaje.nombre}'.")
+            messages.info(request, f"Ya estás anotado en el viaje '{viaje.recorrido}'.")
         else:
             viaje.usuarios_anotados.add(request.user)
-            messages.success(request, f"Te has anotado exitosamente en el viaje '{viaje.nombre}'.")
+            messages.success(request, f"Te has anotado exitosamente en el viaje '{viaje.recorrido}'.")
 
         return redirect('viajes_disponibles')
-
+    
 class BusListView(ListView):
     model = Bus
     template_name = 'bus/buses.html'

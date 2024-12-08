@@ -1,29 +1,34 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<h1>Usuarios anotados en viajes</h1>
+<h1>Usuarios Anotados en Viajes</h1>
 
-{% if viajes %}
-    <table border="1">
+{% if anotados %}
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Nombre del Usuario</th>
                 <th>Correo</th>
                 <th>Viaje</th>
                 <th>Recorrido</th>
+                <th>Bus</th>
+                <th>Chofer</th>
             </tr>
         </thead>
         <tbody>
-            {% for viaje in viajes %}
-                {% for usuario in viaje.usuarios_anotados.all %}
-                    <tr>
-                        <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
-                        <td>{{ usuario.email }}</td>
-                        <td>{{ viaje.nombre }}</td>
-                        <td>{{ viaje.recorrido }}</td>
-                        <td>{{ viaje.fecha_viaje }}</td> 
-                    </tr>
-                {% endfor %}
+            {% for usuario, viaje in anotados %}
+                <tr>
+                   
+                    <td>
+                        <p>{{ usuario }}</p> 
+                        <p>{{ usuario.first_name }} {{ usuario.last_name }}</p>  
+                    </td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ viaje.fecha_viaje }} - {{ viaje.horario_inicio_programado }}</td>
+                    <td>{{ viaje.recorrido }}</td>
+                    <td>{{ viaje.bus.num_unidad }}</td>
+                    <td>{{ viaje.chofer.nombre }} {{ viaje.chofer.apellido }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

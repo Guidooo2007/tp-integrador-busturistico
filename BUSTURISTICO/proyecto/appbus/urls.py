@@ -33,6 +33,5 @@ urlpatterns = [
     path('user/registro', RegistroUsuarioView.as_view(), name='registro'),
     path('viajes/viajes_disponibles', Viajedisponibles.as_view(), name='viajes_disponibles'),
     path('viaje/lista_anotados/', ListaAnotadosView.as_view(), name='lista_anotados'),
-    
-
+    path('viajes/<int:viaje_id>/anotarme/', Viajedisponibles.as_view(), name='anotarse_viaje'),
 ]

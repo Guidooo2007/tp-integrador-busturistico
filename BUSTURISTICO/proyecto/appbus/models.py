@@ -90,7 +90,6 @@ class Chofer(models.Model):
         return f'{self.nombre}'  + ' ' + f'{self.apellido}'
 
 class Viaje(models.Model):
-    id = models.AutoField(primary_key=True)
     chofer = models.ForeignKey(Chofer, on_delete=models.CASCADE,related_name="viaje_chofer" ) #Chofer
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name="viaje_bus") #Bus
     recorrido = models.ForeignKey(Recorrido, on_delete=models.CASCADE,related_name="viaje_recorrido") #recorrido
