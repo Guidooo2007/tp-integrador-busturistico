@@ -20,6 +20,7 @@ Este proyecto es una aplicación de bus turístico desarrollada en Django, que p
 - Python 3.10
 - pipenv
 - MySQL
+- django-widget-tweaks
 
 
 ## Instalación
@@ -36,6 +37,7 @@ Este proyecto es una aplicación de bus turístico desarrollada en Django, que p
     ```bash
     pipenv install
     pipenv shell
+    pip install django-widget-tweaks
     ```
 
 3. **Crear la base de datos en MySQL:**
@@ -73,21 +75,12 @@ Este proyecto es una aplicación de bus turístico desarrollada en Django, que p
 
       code .
     ```
-Ingresar a  Config, ahi deberia encontrar el archivo settings.py, buscar la parte de DATABASES y cambiar las lineas por precausión y guardar (ctrl + s).
-    
-
-    ```python
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'busturistico',
-            'USER': 'public_user',
-            'PASSWORD': 'contraseña',
-            'HOST': 'localhost',
-            'PORT': '3306',
-        }
-    }
-    ```
+    # Agregar widget_tweaks a las aplicaciones instaladas
+    INSTALLED_APPS = [
+        ...
+        'widget_tweaks',
+        ...
+    ]
 
 6. **Migrar las tablas a la base de datos:**
    Asegúrate de que las migraciones de tu aplicación estén listas y aplícalas para crear la estructura de las tablas en la base de datos:
