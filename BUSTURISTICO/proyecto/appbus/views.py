@@ -14,6 +14,7 @@ from datetime import datetime
 from .forms import *
 from .models import *
 from django.http import HttpResponse
+from .handlers import *
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -53,11 +54,15 @@ class ParadaDetailView(DetailView):
     model = Parada
     template_name = 'parada/parada.html'
     context_object_name = 'parada'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['atractivos'] = AtractivoXParada.objects.filter(parada=self.object).select_related('atractivo')
+        parada = self.object  
+        atractivos = ControladorParada.obtener_atractivos_por_parada(parada)  
+        
+        context['atractivos'] = atractivos
         return context
+    
 
 class ListaParadasView(ListView):
     template_name = 'parada/lista_paradas.html'
