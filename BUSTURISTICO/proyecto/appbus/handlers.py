@@ -52,6 +52,10 @@ class ControladorParada:
             return False, 'La parada no existe.'
         except Exception as e:
             return False, f'Error al eliminar la parada: {str(e)}'
+        
+    @staticmethod
+    def obtener_atractivos_por_parada(parada):
+            return AtractivoXParada.objects.filter(parada=parada).select_related('atractivo')
 
 class ControladorParadaRecorrido:
     @staticmethod
