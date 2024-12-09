@@ -75,7 +75,7 @@ Este proyecto es una aplicación de bus turístico desarrollada en Django, que p
 
       code .
     ```
-    # Agregar widget_tweaks a las aplicaciones instaladas
+    Agregar widget_tweaks a las aplicaciones instaladas:
     INSTALLED_APPS = [
         ...
         'widget_tweaks',
